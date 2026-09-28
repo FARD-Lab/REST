@@ -15,12 +15,12 @@
   <meta property="og:title" content="{{TITLE}}">
   <meta property="og:description" content="{{DESCRIPTION}}">
   <meta property="og:url" content="{{PAGE_URL}}">
-  <meta property="og:image" content="{{PAGE_URL}}static/images/overview.png">
+  <meta property="og:image" content="{{PAGE_URL}}static/images/teaser.png">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{TITLE}}">
   <meta name="twitter:description" content="{{DESCRIPTION}}">
-  <meta name="twitter:image" content="{{PAGE_URL}}static/images/overview.png">
+  <meta name="twitter:image" content="{{PAGE_URL}}static/images/teaser.png">
 
   <meta name="citation_title" content="{{TITLE}}">
   <meta name="citation_author" content="Seddik, Fahd">
@@ -30,7 +30,8 @@
 
   <title>{{TITLE}}</title>
 
-  <link rel="icon" type="image/png" href="static/images/favicon.png">
+  <link rel="icon" type="image/svg+xml" href="static/brand/rest-icon.svg">
+  <link rel="apple-touch-icon" href="static/brand/rest-icon-180.png">
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
@@ -72,12 +73,14 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
+            <img class="publication-logo" src="static/brand/rest-logo.svg" alt="REST">
             <h1 class="title is-1 publication-title">{{TITLE}}</h1>
             <div class="is-size-5 publication-authors">
               {{AUTHORS}}
             </div>
-            <div class="is-size-5 publication-authors">
-              <span class="author-block">{{AFFILIATION}}</span>
+            <div class="publication-affiliation">
+              <span><sup>1</sup>{{AFFILIATION}}</span>
+              <img class="affiliation-logo" src="static/brand/fard-ubc-navy.png" alt="FARD Lab, University of British Columbia">
             </div>
             <div class="column has-text-centered">
               <div class="publication-links">
@@ -102,6 +105,14 @@
     </div>
   </section>
 
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+{{TEASER}}
+      </div>
+    </div>
+  </section>
+
   <section class="section hero is-light">
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
@@ -115,11 +126,7 @@
     </div>
   </section>
 
-  <section class="section">
-    <div class="container is-max-desktop">
-{{FLOATS}}
-    </div>
-  </section>
+{{SECTIONS}}
 
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">

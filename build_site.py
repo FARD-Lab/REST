@@ -40,6 +40,7 @@ TITLE = "Principled Thoughts for Latent Recursive LLM Systems"
 AUTHORS = ["Fahd Seddik", "Fatemeh Fard"]
 AFFILIATION = "FARD Lab, University of British Columbia"
 
+SECTION_NAMES = {"Introduction": "Overview"}  # the paper's section names, except where noted
 LABEL_PREFIX = {"fig": "Figure", "tab": "Table", "sec": "Section", "app": "Appendix", "eq": "Eq.", "thm": "Theorem"}
 
 
@@ -80,17 +81,32 @@ def command_arg(text, command):
     return braced(text, m.end() - 1)[0] if m else None
 
 
+def caption_of(tex):
+    """The caption of a float: \\caption{...} or, for a non-floating figure, \\captionof{type}{...}."""
+    m = re.search(r"\\captionof\{[^}]*\}\{", tex)
+    return braced(tex, m.end() - 1)[0] if m else command_arg(tex, "caption")
+
+
 def body_floats():
-    """Figures and tables of the main body, in reading order."""
+    """(section, subsection, float) for every figure and table of the main body, in reading
+    order, where section and subsection are the paper headings the float is \\input under."""
     main = (PAPER / "main.tex").read_text()
     body = main.split("\\begin{document}", 1)[1].split("\\appendix", 1)[0]
-    found = []
+    found, state = [], {"section": None, "subsection": None}
+    token = re.compile(r"\\(section|subsection)\*?\{|\\input\{([^}]+)\}")
 
     def walk(text):
-        for m in re.finditer(r"\\input\{([^}]+)\}", text):
-            name = m.group(1)
+        for m in token.finditer(text):
+            if m.group(1):
+                title = braced(text, m.end() - 1)[0]
+                if m.group(1) == "section":
+                    state["section"], state["subsection"] = title, None
+                else:
+                    state["subsection"] = title
+                continue
+            name = m.group(2)
             if re.match(r"(figures|tables|teaser)/", name):
-                found.append(name)
+                found.append((state["section"], state["subsection"], name))
             else:
                 path = PAPER / (name if name.endswith(".tex") else name + ".tex")
                 if path.exists():
@@ -205,17 +221,16 @@ def main():
     IMAGES.mkdir(parents=True, exist_ok=True)
     PDFS.mkdir(parents=True, exist_ok=True)
     for old in IMAGES.glob("*.png"):
-        if old.name != "favicon.png":
-            old.unlink()
+        old.unlink()
 
     floats = body_floats()
-    tables = [f for f in floats if f.startswith("tables/")]
+    tables = [name for _, _, name in floats if name.startswith("tables/")]
     render_tables(tables)
 
-    blocks = []
-    for name in floats:
+    teaser, sections = "", []
+    for section, subsection, name in floats:
         tex = (PAPER / f"{name}.tex").read_text()
-        caption_tex = command_arg(tex, "caption")
+        caption_tex = caption_of(tex)
         label = command_arg(tex, "label")
         number = labels[label]
         caption = latex_to_html(caption_tex, labels)
@@ -224,16 +239,40 @@ def main():
         if wrap:
             width_pct = max(45, round(float(wrap.group(1)) * 100 * 1.4))
         if name.startswith("tables/"):
-            blocks.append(figure_block("Table", number, caption, f"{Path(name).name}.png", plain(caption), width_pct))
+            block = figure_block("Table", number, caption, f"{Path(name).name}.png", plain(caption), width_pct)
         else:
             graphic = command_arg(tex, "includegraphics")
             pdf = PAPER / (graphic if graphic.endswith(".pdf") else graphic + ".pdf")
             png = f"{Path(name).name}.png"
             png_from_pdf(pdf, IMAGES / png)
-            blocks.append(figure_block("Figure", number, caption, png, plain(caption), width_pct))
+            block = figure_block("Figure", number, caption, png, plain(caption), width_pct)
+        if section is None:
+            teaser += block
+        elif sections and sections[-1][0] == section:
+            sections[-1][1].append((subsection, block))
+        else:
+            sections.append((section, [(subsection, block)]))
 
     abstract = latex_to_html((PAPER / "sections" / "abstract.tex").read_text(), labels)
     shutil.copy(PAPER / "main.pdf", PDFS / "REST.pdf")
+
+    section_html = []
+    for i, (section, items) in enumerate(sections):
+        title = SECTION_NAMES.get(section, latex_to_html(section, labels))
+        subs = {s for s, _ in items if s}
+        parts, current = [], object()
+        for subsection, block in items:
+            if len(subs) > 1 and subsection and subsection != current:
+                parts.append(f'      <h3 class="title is-5 paper-subsection">{latex_to_html(subsection, labels)}</h3>')
+            current = subsection
+            parts.append(block)
+        shade = " is-light" if i % 2 == 0 else ""
+        section_html.append(f'''  <section class="section hero paper-section{shade}">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">{title}</h2>
+{chr(10).join(parts)}
+    </div>
+  </section>''')
 
     template = (HERE / "index.template.html").read_text()
     arxiv_url = f"https://arxiv.org/abs/{ARXIV_ID}" if ARXIV_ID else ""
@@ -257,12 +296,14 @@ def main():
             .replace("{{TITLE}}", TITLE)
             .replace("{{AUTHORS_META}}", ", ".join(AUTHORS))
             .replace("{{AUTHORS}}", "\n              ".join(
-                f'<span class="author-block">{a}{"," if i < len(AUTHORS) - 1 else ""}</span>' for i, a in enumerate(AUTHORS)))
+                f'<span class="author-block"><span class="author-name">{a}</span><sup>1</sup>'
+                f'{"," if i < len(AUTHORS) - 1 else ""}</span>' for i, a in enumerate(AUTHORS)))
             .replace("{{AFFILIATION}}", AFFILIATION)
             .replace("{{DESCRIPTION}}", html.escape(plain(abstract).split(". ")[0] + "."))
             .replace("{{ABSTRACT}}", abstract)
             .replace("{{ABSTRACT_PLAIN}}", html.escape(plain(abstract)))
-            .replace("{{FLOATS}}", "\n".join(blocks))
+            .replace("{{TEASER}}", teaser)
+            .replace("{{SECTIONS}}", "\n".join(section_html))
             .replace("{{CODE_URL}}", CODE_URL)
             .replace("{{PAGE_URL}}", PAGE_URL)
             .replace("{{ARXIV_BUTTON}}", arxiv_button)
@@ -273,9 +314,9 @@ def main():
     if "\u2014" in page:
         sys.exit("ERROR: the page contains an em-dash")
     (HERE / "index.html").write_text(page)
-    print(f"index.html: {len(blocks)} figures and tables")
-    for name in floats:
-        print("  ", name)
+    print(f"index.html: teaser + {sum(len(items) for _, items in sections)} figures and tables in {len(sections)} sections")
+    for section, subsection, name in floats:
+        print(f"   {section or '(teaser)'} / {subsection or '-'}: {name}")
 
 
 if __name__ == "__main__":

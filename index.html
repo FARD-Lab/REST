@@ -15,12 +15,12 @@
   <meta property="og:title" content="Principled Thoughts for Latent Recursive LLM Systems">
   <meta property="og:description" content="Large language models can reason in continuous space instead of decoded text, by recurring on their own hidden states or by passing those states between agents, while training supervises only the Cross-Entropy (CE) of the final decoded answer and does not constrain the thought.">
   <meta property="og:url" content="https://fard-lab.github.io/REST/">
-  <meta property="og:image" content="https://fard-lab.github.io/REST/static/images/overview.png">
+  <meta property="og:image" content="https://fard-lab.github.io/REST/static/images/teaser.png">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Principled Thoughts for Latent Recursive LLM Systems">
   <meta name="twitter:description" content="Large language models can reason in continuous space instead of decoded text, by recurring on their own hidden states or by passing those states between agents, while training supervises only the Cross-Entropy (CE) of the final decoded answer and does not constrain the thought.">
-  <meta name="twitter:image" content="https://fard-lab.github.io/REST/static/images/overview.png">
+  <meta name="twitter:image" content="https://fard-lab.github.io/REST/static/images/teaser.png">
 
   <meta name="citation_title" content="Principled Thoughts for Latent Recursive LLM Systems">
   <meta name="citation_author" content="Seddik, Fahd">
@@ -30,7 +30,8 @@
 
   <title>Principled Thoughts for Latent Recursive LLM Systems</title>
 
-  <link rel="icon" type="image/png" href="static/images/favicon.png">
+  <link rel="icon" type="image/svg+xml" href="static/brand/rest-icon.svg">
+  <link rel="apple-touch-icon" href="static/brand/rest-icon-180.png">
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
@@ -72,13 +73,15 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
+            <img class="publication-logo" src="static/brand/rest-logo.svg" alt="REST">
             <h1 class="title is-1 publication-title">Principled Thoughts for Latent Recursive LLM Systems</h1>
             <div class="is-size-5 publication-authors">
-              <span class="author-block">Fahd Seddik,</span>
-              <span class="author-block">Fatemeh Fard</span>
+              <span class="author-block"><span class="author-name">Fahd Seddik</span><sup>1</sup>,</span>
+              <span class="author-block"><span class="author-name">Fatemeh Fard</span><sup>1</sup></span>
             </div>
-            <div class="is-size-5 publication-authors">
-              <span class="author-block">FARD Lab, University of British Columbia</span>
+            <div class="publication-affiliation">
+              <span><sup>1</sup>FARD Lab, University of British Columbia</span>
+              <img class="affiliation-logo" src="static/brand/fard-ubc-navy.png" alt="FARD Lab, University of British Columbia">
             </div>
             <div class="column has-text-centered">
               <div class="publication-links">
@@ -103,6 +106,17 @@
     </div>
   </section>
 
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+      <figure class="paper-float paper-figure">
+        <img src="static/images/teaser.png" alt="REST. The top row shows the four failures of Cross-Entropy (CE) only training of the thought. REST adds a $\beta$-weighted loss on to the CE, with one term per failure, under the same data and compute. (a) Accuracy gain for single- and multi-agent settings across Small (1–2B) and Large (3–4B) models. (b)–(f) REST thoughts spread apart instead of collapsing, reach a lower training CE and a higher accuracy, recover more accuracy when they replace the oracle text, reach a final answer more often, and keep their superposition." loading="lazy" style="width: 100%;">
+        <figcaption><strong>Figure 1.</strong> <strong>REST.</strong> The top row shows the four failures of Cross-Entropy (CE) only training of the thought. REST adds a $\beta$-weighted loss on to the CE, with one term per failure, under the same data and compute. (a) Accuracy gain for single- and multi-agent settings across Small (1–2B) and Large (3–4B) models. (b)–(f) REST thoughts spread apart instead of collapsing, reach a lower training CE and a higher accuracy, recover more accuracy when they replace the oracle text, reach a final answer more often, and keep their superposition.</figcaption>
+      </figure>
+      </div>
+    </div>
+  </section>
+
   <section class="section hero is-light">
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
@@ -116,35 +130,55 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section hero paper-section is-light">
     <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Overview</h2>
       <figure class="paper-float paper-figure">
         <img src="static/images/overview.png" alt="Overview of REST. Latent systems pass a thought $\mathbf{T}$ through a trained outer link (left). REST adds a $\beta$-weighted loss built from the four properties of $\mathbf{T}$ to the CE objective (middle). CE-only thoughts collapse and REST improves accuracy under the same data and compute (right)." loading="lazy" style="width: 100%;">
-        <figcaption><strong>Figure 1.</strong> <strong>Overview of REST.</strong> Latent systems pass a thought $\mathbf{T}$ through a trained outer link (left). REST adds a $\beta$-weighted loss built from the four properties of $\mathbf{T}$ to the CE objective (middle). CE-only thoughts collapse and REST improves accuracy under the same data and compute (right).</figcaption>
+        <figcaption><strong>Figure 2.</strong> <strong>Overview of REST.</strong> Latent systems pass a thought $\mathbf{T}$ through a trained outer link (left). REST adds a $\beta$-weighted loss built from the four properties of $\mathbf{T}$ to the CE objective (middle). CE-only thoughts collapse and REST improves accuracy under the same data and compute (right).</figcaption>
       </figure>
+    </div>
+  </section>
+  <section class="section hero paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Background</h2>
       <figure class="paper-float paper-figure">
         <img src="static/images/failures.png" alt="Why CE is not enough. Four failures of CE thoughts and the property that addresses each." loading="lazy" style="width: 100%;">
-        <figcaption><strong>Figure 2.</strong> <strong>Why CE is not enough.</strong> Four failures of CE thoughts and the property that addresses each.</figcaption>
+        <figcaption><strong>Figure 3.</strong> <strong>Why CE is not enough.</strong> Four failures of CE thoughts and the property that addresses each.</figcaption>
       </figure>
+    </div>
+  </section>
+  <section class="section hero paper-section is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">REST: Representation-Supervised Thought(s)</h2>
       <figure class="paper-float paper-figure">
-        <img src="static/images/selfloop.png" alt="Single agent. $\mathcal{R}_{\mathrm{in}}$ runs at each of the $m&#x27;$ steps, and $\mathcal{R}_\psi$ once per round." loading="lazy" style="width: 49%;">
-        <figcaption><strong>Figure 3.</strong> <strong>Single agent</strong>. $\mathcal{R}_{\mathrm{in}}$ runs at each of the $m'$ steps, and $\mathcal{R}_\psi$ once per round.</figcaption>
+        <img src="static/images/selfloop.png" alt="Single agent. $\mathcal{R}_{\mathrm{in}}$ runs at each of the $m&#x27;$ steps, and $\mathcal{R}_\psi$ once per round." loading="lazy" style="width: 52%;">
+        <figcaption><strong>Figure 4.</strong> <strong>Single agent</strong>. $\mathcal{R}_{\mathrm{in}}$ runs at each of the $m'$ steps, and $\mathcal{R}_\psi$ once per round.</figcaption>
       </figure>
+    </div>
+  </section>
+  <section class="section hero paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Evaluation</h2>
+      <h3 class="title is-5 paper-subsection">Experimental Setup</h3>
       <figure class="paper-float paper-table">
         <figcaption><strong>Table 1.</strong> Light and Scaled systems.</figcaption>
-        <img src="static/images/agent_config.png" alt="Light and Scaled systems." loading="lazy" style="width: 57%;">
+        <img src="static/images/agent_config.png" alt="Light and Scaled systems." loading="lazy" style="width: 49%;">
       </figure>
+      <h3 class="title is-5 paper-subsection">Single-Agent Evaluation</h3>
       <figure class="paper-float paper-table">
         <figcaption><strong>Table 2.</strong> Single-agent, Light vs Scaled, at $r=1$ and $r=3$ respectively, each row at its best $\beta$.</figcaption>
         <div class="float-scroll"><img src="static/images/single-agent_main.png" alt="Single-agent, Light vs Scaled, at $r=1$ and $r=3$ respectively, each row at its best $\beta$." loading="lazy" style="width: 100%;"></div>
       </figure>
+      <h3 class="title is-5 paper-subsection">Multi-Agent Evaluation</h3>
       <figure class="paper-float paper-table">
         <figcaption><strong>Table 3.</strong> Multi-agent, Light vs Scaled, at $r=1$ and $r=3$ respectively, each row at its best $\beta$.</figcaption>
         <div class="float-scroll"><img src="static/images/multi-agent_main.png" alt="Multi-agent, Light vs Scaled, at $r=1$ and $r=3$ respectively, each row at its best $\beta$." loading="lazy" style="width: 100%;"></div>
       </figure>
+      <h3 class="title is-5 paper-subsection">Analysis</h3>
       <figure class="paper-float paper-figure">
         <img src="static/images/depth_scale.png" alt="Acc. Change vs $r$" loading="lazy" style="width: 45%;">
-        <figcaption><strong>Figure 4.</strong> Acc. Change vs $r$</figcaption>
+        <figcaption><strong>Figure 5.</strong> Acc. Change vs $r$</figcaption>
       </figure>
       <figure class="paper-float paper-table">
         <figcaption><strong>Table 4.</strong> REST against auxiliary-loss baselines, Light vs Scaled.</figcaption>
@@ -152,15 +186,20 @@
       </figure>
       <figure class="paper-float paper-figure">
         <img src="static/images/analysis_panels.png" alt="REST against CE-only. (a) Decoded thoughts compared to output / input. (b) Replacing oracle text with thought. (c) Answer rate vs token usage. (d) Effective Superposition." loading="lazy" style="width: 100%;">
-        <figcaption><strong>Figure 5.</strong> <strong>REST against CE-only.</strong> (a) Decoded thoughts compared to output / input. (b) Replacing oracle text with thought. (c) Answer rate vs token usage. (d) Effective Superposition.</figcaption>
+        <figcaption><strong>Figure 6.</strong> <strong>REST against CE-only.</strong> (a) Decoded thoughts compared to output / input. (b) Replacing oracle text with thought. (c) Answer rate vs token usage. (d) Effective Superposition.</figcaption>
       </figure>
       <figure class="paper-float paper-figure">
         <img src="static/images/pca_ce.png" alt="REST against CE-only. (a) PCA for $\mathbf{T}$. CE thoughts collapse into dense clusters, while REST spreads thoughts apart. (b) Training CE under causality. More details in Appendix D." loading="lazy" style="width: 100%;">
-        <figcaption><strong>Figure 6.</strong> <strong>REST against CE-only.</strong> (a) PCA for $\mathbf{T}$. CE thoughts collapse into dense clusters, while REST spreads thoughts apart. (b) Training CE under causality. More details in Appendix&nbsp;D.</figcaption>
+        <figcaption><strong>Figure 7.</strong> <strong>REST against CE-only.</strong> (a) PCA for $\mathbf{T}$. CE thoughts collapse into dense clusters, while REST spreads thoughts apart. (b) Training CE under causality. More details in Appendix&nbsp;D.</figcaption>
       </figure>
+    </div>
+  </section>
+  <section class="section hero paper-section is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Related Work</h2>
       <figure class="paper-float paper-figure">
         <img src="static/images/related.png" alt="Positioning of REST." loading="lazy" style="width: 49%;">
-        <figcaption><strong>Figure 7.</strong> Positioning of REST.</figcaption>
+        <figcaption><strong>Figure 8.</strong> Positioning of REST.</figcaption>
       </figure>
     </div>
   </section>
