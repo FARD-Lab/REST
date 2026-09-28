@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+refs/
+adapters/
+outputs/
+.ruff_cache/
