@@ -34,7 +34,7 @@ PDFS = HERE / "static" / "pdfs"
 MAX_WIDTH_PX = 2400
 PAGE_URL = "https://fard-lab.github.io/REST/"
 CODE_URL = "https://github.com/FARD-Lab/REST"
-ARXIV_ID = ""  # set once the paper is on arXiv, e.g. "2610.01234"
+ARXIV_ID = "2609.36159"
 
 TITLE = "Principled Thoughts for Latent Recursive LLM Systems"
 AUTHORS = ["Fahd Seddik", "Fatemeh Fard"]
@@ -277,11 +277,11 @@ def main():
     template = (HERE / "index.template.html").read_text()
     arxiv_url = f"https://arxiv.org/abs/{ARXIV_ID}" if ARXIV_ID else ""
     bibtex = (
-        "@misc{seddik2026principled,\n"
+        "@misc{seddik2026principledthoughtslatentrecursive,\n"
         f"  title         = {{{TITLE}}},\n"
         f"  author        = {{{' and '.join(AUTHORS)}}},\n"
         "  year          = {2026},\n"
-        + (f"  eprint        = {{{ARXIV_ID}}},\n  archivePrefix = {{arXiv}},\n  primaryClass  = {{cs.CL}},\n  url           = {{{arxiv_url}}}\n"
+        + (f"  eprint        = {{{ARXIV_ID}}},\n  archivePrefix = {{arXiv}},\n  primaryClass  = {{cs.AI}},\n  url           = {{{arxiv_url}}}\n"
            if ARXIV_ID else f"  url           = {{{PAGE_URL}}}\n")
         + "}"
     )
